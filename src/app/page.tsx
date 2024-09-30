@@ -62,7 +62,7 @@ export default function Home() {
                 type="number"
                 id="width"
                 placeholder="Logo Width"
-                className="w-full focus:outline-white"
+                className="w-full focus:outline-white text-base"
                 value={width}
                 onChange={(e) => setWidth(e.target.value)}
               />
@@ -76,22 +76,22 @@ export default function Home() {
                 type="number"
                 id="height"
                 placeholder="Logo Height"
-                className="w-full focus:outline-white"
+                className="w-full focus:outline-white text-base"
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
               />
             </div>
 
             <div className="grid max-w-sm items-center gap-1.5 grid-cols-[_100px_1fr]">
-              <Label htmlFor="height" className="text-lg">
+              <Label htmlFor="sheets" className="text-lg">
                 Sheets
               </Label>
               <Input
                 type="number"
                 max={5}
-                id="height"
-                placeholder="Logo Height"
-                className="w-full focus:outline-white"
+                id="sheets"
+                placeholder="Number of sheets"
+                className="w-full focus:outline-white text-base"
                 value={sheets}
                 onChange={(e) => setSheets(e.target.value)}
               />
@@ -136,9 +136,9 @@ export default function Home() {
 }
 
 /*
-1 Sheet (216 Square inch)  = Rs.1836 (Rs.8.5/Square inch)
-2 Sheet (432 Square inch)  = Rs.3000 (Rs.7/Square inch)
-3 Sheet (648 Square inch)  = Rs.4500 (Rs.7/Square inch)
-4 Sheet (864 Square inch)  = Rs.6000 (Rs.7/Square inch)
-5 Sheet (1080 Square inch) = Rs.7000 (Rs.6.5/Square inch)
- */
+  1 Sheet (216 Square inch)  = Rs.1836 (Rs.8.5 /Square inch)
+  2 Sheet (432 Square inch)  = Rs.3000 (Rs.7 / Square inch)
+  3 Sheet (648 Square inch)  = Rs.4500 (Rs.7 / Square inch)
+  4 Sheet (864 Square inch)  = Rs.6000 (Rs.7 / Square inch)
+  5 Sheet (1080 Square inch) = Rs.7000 (Rs.6.5 / Square inch)
+*/
