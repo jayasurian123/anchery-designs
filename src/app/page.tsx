@@ -1,8 +1,54 @@
+'use client';
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useEffect, useState } from 'react';
+
+const getCostPerSheet = (sheet: number) => {
+  switch (sheet) {
+    case 0:
+      return 0;
+    case 1:
+      return 1836;
+    case 2:
+      return 3000;
+    case 3:
+      return 4500;
+    case 4:
+      return 6000;
+    case 5:
+      return 7000;
+    default:
+      return 0;
+  }
+};
 
 export default function Home() {
+  const [width, setWidth] = useState('');
+  const [height, setHeight] = useState('');
+  const [sheets, setSheets] = useState('1');
+  const [logos, setLogos] = useState(0);
+  const [costPerLogo, setCostPerLogo] = useState(0);
+  const [costPerSheet, setCostPerSheet] = useState(0);
+
+  useEffect(() => {
+    const widthInNumber = parseFloat(width);
+    const heightInNumber = parseFloat(height);
+    const sheetsInNumber = parseFloat(sheets);
+
+    const area = widthInNumber * heightInNumber;
+    const totalLogos = (sheetsInNumber * (12 * 18)) / area;
+    setLogos(totalLogos);
+
+    const perSheetCost = getCostPerSheet(sheetsInNumber);
+    setCostPerSheet(perSheetCost);
+
+    setCostPerLogo(Math.round((perSheetCost / totalLogos) * 100) / 100);
+
+    return () => {};
+  }, [height, width, sheets]);
+
   return (
     <div className="container mx-auto max-w-screen-lg bg-slate-100 h-screen my-2">
       <Card className="pt-4 mx-2">
@@ -17,6 +63,8 @@ export default function Home() {
                 id="width"
                 placeholder="Logo Width"
                 className="w-full focus:outline-white"
+                value={width}
+                onChange={(e) => setWidth(e.target.value)}
               />
             </div>
 
@@ -29,6 +77,8 @@ export default function Home() {
                 id="height"
                 placeholder="Logo Height"
                 className="w-full focus:outline-white"
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
               />
             </div>
 
@@ -38,10 +88,12 @@ export default function Home() {
               </Label>
               <Input
                 type="number"
+                max={5}
                 id="height"
                 placeholder="Logo Height"
                 className="w-full focus:outline-white"
-                defaultValue={1}
+                value={sheets}
+                onChange={(e) => setSheets(e.target.value)}
               />
             </div>
           </div>
@@ -51,23 +103,32 @@ export default function Home() {
       <Card className="pt-4 mx-2 mt-2">
         <CardContent>
           <div>
-            <p className="text-2xl text-center">
-              <span className="font-bold">50</span> Logos
-            </p>
+            {!isNaN(logos) ? (
+              <p className="text-2xl text-center">
+                <span className="font-bold">{Math.floor(logos)}</span> Logos
+              </p>
+            ) : (
+              <p className="text-2xl text-center">
+                <span className="font-bold">0</span> Logos
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
 
       <Card className="pt-4 mx-2 mt-2">
         <CardContent>
-          <p className="text-center text-2xl font-bold">₹1836</p>
+          <p className="text-center text-2xl font-bold">₹{costPerSheet}</p>
         </CardContent>
       </Card>
 
       <Card className="pt-4 mx-2 mt-2">
         <CardContent>
-          <p className="mt-1">* ₹8.5 / Square inch</p>
-          <p className="mt-1">* ₹8.5 / Square inch</p>
+          {!isNaN(costPerLogo) ? (
+            <p className="mt-1">* ₹{costPerLogo} / logo</p>
+          ) : (
+            <p className="mt-1">* ₹0 / logo</p>
+          )}
         </CardContent>
       </Card>
     </div>
