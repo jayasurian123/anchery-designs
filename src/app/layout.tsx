@@ -1,12 +1,4 @@
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarTrigger
-} from '@/components/ui/menubar';
+import { Menubar } from '@/components/ui/menubar';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import Image from 'next/image';
