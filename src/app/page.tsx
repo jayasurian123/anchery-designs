@@ -1,8 +1,12 @@
 'use client';
 
+const SHEET_WIDTH = 12;
+const SHEET_LENGTH = 18;
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useEffect, useState } from 'react';
 
 const getCostPerSheet = (sheet: number) => {
@@ -23,8 +27,10 @@ const getCostPerSheet = (sheet: number) => {
       return 0;
   }
 };
-
+// 1,393.5456 cm²
+// 1,393.5456
 export default function Home() {
+  const [unit, setUnit] = useState<'inch' | 'cm'>('inch');
   const [width, setWidth] = useState('');
   const [height, setHeight] = useState('');
   const [sheets, setSheets] = useState('1');
@@ -37,8 +43,15 @@ export default function Home() {
     const heightInNumber = parseFloat(height);
     const sheetsInNumber = parseFloat(sheets);
 
-    const area = widthInNumber * heightInNumber;
-    const totalLogos = (sheetsInNumber * (12 * 18)) / area;
+    const firstOption =
+      Math.floor(SHEET_LENGTH / widthInNumber) *
+      Math.floor(SHEET_WIDTH / heightInNumber);
+
+    const secondOption =
+      Math.floor(SHEET_WIDTH / widthInNumber) *
+      Math.floor(SHEET_LENGTH / heightInNumber);
+
+    const totalLogos = Math.max(firstOption, secondOption) * sheetsInNumber;
     setLogos(totalLogos);
 
     const perSheetCost = getCostPerSheet(sheetsInNumber);
@@ -49,8 +62,29 @@ export default function Home() {
     return () => {};
   }, [height, width, sheets]);
 
+  function handleValueChange(val: 'cm' | 'inch') {
+    setUnit(val);
+  }
+
   return (
     <div className="container mx-auto max-w-screen-lg  h-screen my-2">
+      <Card className="pt-4 mx-2 mt-2">
+        <CardContent>
+          <ToggleGroup
+            type="single"
+            value={unit}
+            onValueChange={handleValueChange}
+          >
+            <ToggleGroupItem value="inch" aria-label="Toggle Inch">
+              <p className="text-base">Inch</p>
+            </ToggleGroupItem>
+            <ToggleGroupItem value="cm" aria-label="Toggle cm">
+              <p className="text-base">cm</p>
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </CardContent>
+      </Card>
+
       <Card className="pt-4 mx-2 mt-2">
         <CardContent>
           <div className="grid grid-cols-1 gap-y-2">
