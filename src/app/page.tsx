@@ -10,7 +10,7 @@ const getCostPerSheet = (sheet: number) => {
     case 0:
       return 0;
     case 1:
-      return 1836;
+      return 2000;
     case 2:
       return 3000;
     case 3:
@@ -50,8 +50,8 @@ export default function Home() {
   }, [height, width, sheets]);
 
   return (
-    <div className="container mx-auto max-w-screen-lg bg-slate-100 h-screen my-2">
-      <Card className="pt-4 mx-2">
+    <div className="container mx-auto max-w-screen-lg  h-screen my-2">
+      <Card className="pt-4 mx-2 mt-2">
         <CardContent>
           <div className="grid grid-cols-1 gap-y-2">
             <div className="grid max-w-sm items-center gap-1.5 grid-cols-[_100px_1fr]">
@@ -135,10 +135,8 @@ export default function Home() {
   );
 }
 
-/*
-  1 Sheet (216 Square inch)  = Rs.1836 (Rs.8.5 /Square inch)
-  2 Sheet (432 Square inch)  = Rs.3000 (Rs.7 / Square inch)
-  3 Sheet (648 Square inch)  = Rs.4500 (Rs.7 / Square inch)
-  4 Sheet (864 Square inch)  = Rs.6000 (Rs.7 / Square inch)
-  5 Sheet (1080 Square inch) = Rs.7000 (Rs.6.5 / Square inch)
-*/
+// 1 Sheet (216 Square inch)  = Rs.2000
+// 2 Sheet (432 Square inch)  = Rs.3000 (Rs.7/Square inch)
+// 3 Sheet (648 Square inch)  = Rs.4500 (Rs.7/Square inch)
+// 4 Sheet (864 Square inch)  = Rs.6000 (Rs.7/Square inch)
+// 5 Sheet (1080 Square inch) = Rs.7000 (Rs.6.5/Square inch)

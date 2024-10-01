@@ -1,5 +1,15 @@
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger
+} from '@/components/ui/menubar';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import Image from 'next/image';
 import './globals.css';
 
 const geistSans = localFont({
@@ -27,8 +37,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-100`}
       >
+        <Menubar className="my-2">
+          <Image
+            height="54"
+            width="150"
+            alt="anchery design logo"
+            src="/images/logo-with-name.svg"
+          ></Image>
+        </Menubar>
         {children}
       </body>
     </html>
