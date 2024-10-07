@@ -15,6 +15,14 @@ const inchesToMm = (inches: number): number => {
 };
 
 const getCostPerSheet = (sheet: number): number => {
+  if (sheet > 14) {
+    return sheet * 216 * 6;
+  }
+
+  if (sheet > 5) {
+    return sheet * 216 * 6.5;
+  }
+
   const costs = [0, 2000, 3000, 4500, 6000, 7000];
   return costs[sheet] || 0;
 };
