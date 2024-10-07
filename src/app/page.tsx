@@ -26,12 +26,11 @@ const getMaxRectangles = (
   const horizontalCount = Math.floor(
     (CONTAINER_WIDTH + LOGO_GAP) / (rectangleWidth + LOGO_GAP)
   );
-  console.log(CONTAINER_WIDTH + LOGO_GAP, rectangleWidth + LOGO_GAP);
+
   const verticalCount = Math.floor(
     (CONTAINER_HEIGHT + LOGO_GAP) / (rectangleHeight + LOGO_GAP)
   );
 
-  console.log('hori', horizontalCount, verticalCount);
   const normalOrientation = horizontalCount * verticalCount;
 
   const rotatedHorizontalCount = Math.floor(
@@ -41,7 +40,6 @@ const getMaxRectangles = (
     (CONTAINER_HEIGHT + LOGO_GAP) / (rectangleWidth + LOGO_GAP)
   );
   const rotatedOrientation = rotatedHorizontalCount * rotatedVerticalCount;
-  console.log('rotated', rotatedHorizontalCount, rotatedVerticalCount);
   return Math.max(normalOrientation, rotatedOrientation);
 };
 
