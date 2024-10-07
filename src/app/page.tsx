@@ -6,6 +6,10 @@ import { Label } from '@/components/ui/label';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useEffect, useState } from 'react';
 
+const cmToMm = (cm: number): number => {
+  return cm * 10;
+};
+
 const inchesToMm = (inches: number): number => {
   return inches * 25.4;
 };
@@ -44,7 +48,7 @@ const getMaxRectangles = (
 };
 
 export default function Home() {
-  const [unit, setUnit] = useState<'inch' | 'cm'>('inch');
+  const [unit, setUnit] = useState<'inch' | 'cm'>('cm');
   const [width, setWidth] = useState('');
   const [height, setHeight] = useState('');
   const [sheets, setSheets] = useState('1');
@@ -52,13 +56,23 @@ export default function Home() {
   const [costPerLogo, setCostPerLogo] = useState(0);
   const [costPerSheet, setCostPerSheet] = useState(0);
 
+  const widthInNumber = parseFloat(width);
+  const heightInNumber = parseFloat(height);
+
   useEffect(() => {
-    const widthInNumber = inchesToMm(parseFloat(width));
-    const heightInNumber = inchesToMm(parseFloat(height));
+    let widthInMm, heightInMm;
+
+    if (unit === 'inch') {
+      widthInMm = inchesToMm(widthInNumber);
+      heightInMm = inchesToMm(heightInNumber);
+    } else {
+      widthInMm = cmToMm(widthInNumber);
+      heightInMm = cmToMm(heightInNumber);
+    }
+
     const sheetsInNumber = parseFloat(sheets);
 
-    const totalLogos =
-      getMaxRectangles(widthInNumber, heightInNumber) * sheetsInNumber;
+    const totalLogos = getMaxRectangles(widthInMm, heightInMm) * sheetsInNumber;
     setLogos(totalLogos);
 
     const perSheetCost = getCostPerSheet(sheetsInNumber);
@@ -67,7 +81,7 @@ export default function Home() {
     setCostPerLogo(Math.round((perSheetCost / totalLogos) * 100) / 100);
 
     return () => {};
-  }, [height, width, sheets]);
+  }, [height, width, sheets, unit, widthInNumber, heightInNumber]);
 
   function handleValueChange(val: 'cm' | 'inch') {
     setUnit(val);
@@ -82,11 +96,11 @@ export default function Home() {
             value={unit}
             onValueChange={handleValueChange}
           >
-            <ToggleGroupItem value="inch" aria-label="Toggle Inch">
-              <p className="text-base">Inch</p>
-            </ToggleGroupItem>
             <ToggleGroupItem value="cm" aria-label="Toggle cm">
               <p className="text-base">cm</p>
+            </ToggleGroupItem>
+            <ToggleGroupItem value="inch" aria-label="Toggle Inch">
+              <p className="text-base">Inch</p>
             </ToggleGroupItem>
           </ToggleGroup>
         </CardContent>
