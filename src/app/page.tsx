@@ -1,34 +1,50 @@
 'use client';
 
-const SHEET_WIDTH = 12;
-const SHEET_LENGTH = 18;
-
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useEffect, useState } from 'react';
 
-const getCostPerSheet = (sheet: number) => {
-  switch (sheet) {
-    case 0:
-      return 0;
-    case 1:
-      return 2000;
-    case 2:
-      return 3000;
-    case 3:
-      return 4500;
-    case 4:
-      return 6000;
-    case 5:
-      return 7000;
-    default:
-      return 0;
-  }
+const inchesToMm = (inches: number): number => {
+  return inches * 25.4;
 };
-// 1,393.5456 cm²
-// 1,393.5456
+
+const getCostPerSheet = (sheet: number): number => {
+  const costs = [0, 2000, 3000, 4500, 6000, 7000];
+  return costs[sheet] || 0;
+};
+
+const LOGO_GAP = 3; // 3mm gap between rectangles
+const CONTAINER_WIDTH = 12.4 * 25.4; // in mm
+const CONTAINER_HEIGHT = 18.6 * 25.4; // in mm
+
+const getMaxRectangles = (
+  rectangleWidth: number,
+  rectangleHeight: number
+): number => {
+  const horizontalCount = Math.floor(
+    (CONTAINER_WIDTH + LOGO_GAP) / (rectangleWidth + LOGO_GAP)
+  );
+  console.log(CONTAINER_WIDTH + LOGO_GAP, rectangleWidth + LOGO_GAP);
+  const verticalCount = Math.floor(
+    (CONTAINER_HEIGHT + LOGO_GAP) / (rectangleHeight + LOGO_GAP)
+  );
+
+  console.log('hori', horizontalCount, verticalCount);
+  const normalOrientation = horizontalCount * verticalCount;
+
+  const rotatedHorizontalCount = Math.floor(
+    (CONTAINER_WIDTH + LOGO_GAP) / (rectangleHeight + LOGO_GAP)
+  );
+  const rotatedVerticalCount = Math.floor(
+    (CONTAINER_HEIGHT + LOGO_GAP) / (rectangleWidth + LOGO_GAP)
+  );
+  const rotatedOrientation = rotatedHorizontalCount * rotatedVerticalCount;
+  console.log('rotated', rotatedHorizontalCount, rotatedVerticalCount);
+  return Math.max(normalOrientation, rotatedOrientation);
+};
+
 export default function Home() {
   const [unit, setUnit] = useState<'inch' | 'cm'>('inch');
   const [width, setWidth] = useState('');
@@ -39,19 +55,12 @@ export default function Home() {
   const [costPerSheet, setCostPerSheet] = useState(0);
 
   useEffect(() => {
-    const widthInNumber = parseFloat(width);
-    const heightInNumber = parseFloat(height);
+    const widthInNumber = inchesToMm(parseFloat(width));
+    const heightInNumber = inchesToMm(parseFloat(height));
     const sheetsInNumber = parseFloat(sheets);
 
-    const firstOption =
-      Math.floor(SHEET_LENGTH / widthInNumber) *
-      Math.floor(SHEET_WIDTH / heightInNumber);
-
-    const secondOption =
-      Math.floor(SHEET_WIDTH / widthInNumber) *
-      Math.floor(SHEET_LENGTH / heightInNumber);
-
-    const totalLogos = Math.max(firstOption, secondOption) * sheetsInNumber;
+    const totalLogos =
+      getMaxRectangles(widthInNumber, heightInNumber) * sheetsInNumber;
     setLogos(totalLogos);
 
     const perSheetCost = getCostPerSheet(sheetsInNumber);
