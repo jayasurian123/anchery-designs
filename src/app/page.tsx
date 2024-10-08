@@ -24,11 +24,15 @@ const cmToMm = (cm: number): number => cm * 10;
 
 const inchesToMm = (inches: number): number => inches * 25.4;
 
-const getCostPerSheet = (sheet: number): number => {
-  if (sheet > 14) return sheet * 216 * 6;
-  if (sheet > 5) return sheet * 216 * 6.5;
-  const costs = [0, 2000, 3000, 4500, 6000, 7000];
-  return costs[sheet] || 0;
+const getCostPerSheet = (sheets: number): number => {
+  if (sheets === 0) return 0;
+  if (sheets === 1) return 1800;
+  if (sheets <= 4) return 1400 * sheets;
+  if (sheets <= 9) return 1300 * sheets;
+  if (sheets <= 14) return 1200 * sheets;
+  if (sheets <= 19) return 1100 * sheets;
+
+  return 1000 * sheets;
 };
 
 const LOGO_GAP = 3;
@@ -79,7 +83,7 @@ export default function Home() {
 
     const totalLogos = getMaxRectangles(widthInMm, heightInMm) * sheetsInNumber;
     const perSheetCost = getCostPerSheet(sheetsInNumber);
-
+    console.log(isNaN(perSheetCost));
     setLogos(totalLogos);
     setCostPerSheet(perSheetCost);
     setCostPerLogo(Math.round((perSheetCost / totalLogos) * 100) / 100);
@@ -170,7 +174,9 @@ export default function Home() {
 
       <Card className="pt-4 mx-2 mt-2">
         <CardContent>
-          <p className="text-center text-2xl font-bold">₹{costPerSheet}</p>
+          <p className="text-center text-2xl font-bold">
+            ₹{!isNaN(costPerSheet) ? costPerSheet : 0}
+          </p>
         </CardContent>
       </Card>
 
