@@ -5,31 +5,35 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useEffect, useState } from 'react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@/components/ui/accordion';
 
-const cmToMm = (cm: number): number => {
-  return cm * 10;
-};
+const cmToMm = (cm: number): number => cm * 10;
 
-const inchesToMm = (inches: number): number => {
-  return inches * 25.4;
-};
+const inchesToMm = (inches: number): number => inches * 25.4;
 
 const getCostPerSheet = (sheet: number): number => {
-  if (sheet > 14) {
-    return sheet * 216 * 6;
-  }
-
-  if (sheet > 5) {
-    return sheet * 216 * 6.5;
-  }
-
+  if (sheet > 14) return sheet * 216 * 6;
+  if (sheet > 5) return sheet * 216 * 6.5;
   const costs = [0, 2000, 3000, 4500, 6000, 7000];
   return costs[sheet] || 0;
 };
 
-const LOGO_GAP = 3; // 3mm gap between rectangles
-const CONTAINER_WIDTH = 12.4 * 25.4; // in mm
-const CONTAINER_HEIGHT = 18.6 * 25.4; // in mm
+const LOGO_GAP = 3;
+const CONTAINER_WIDTH = 12.4 * 25.4;
+const CONTAINER_HEIGHT = 18.6 * 25.4;
 
 const getMaxRectangles = (
   rectangleWidth: number,
@@ -38,11 +42,9 @@ const getMaxRectangles = (
   const horizontalCount = Math.floor(
     (CONTAINER_WIDTH + LOGO_GAP) / (rectangleWidth + LOGO_GAP)
   );
-
   const verticalCount = Math.floor(
     (CONTAINER_HEIGHT + LOGO_GAP) / (rectangleHeight + LOGO_GAP)
   );
-
   const normalOrientation = horizontalCount * verticalCount;
 
   const rotatedHorizontalCount = Math.floor(
@@ -52,6 +54,7 @@ const getMaxRectangles = (
     (CONTAINER_HEIGHT + LOGO_GAP) / (rectangleWidth + LOGO_GAP)
   );
   const rotatedOrientation = rotatedHorizontalCount * rotatedVerticalCount;
+
   return Math.max(normalOrientation, rotatedOrientation);
 };
 
@@ -68,35 +71,24 @@ export default function Home() {
   const heightInNumber = parseFloat(height);
 
   useEffect(() => {
-    let widthInMm, heightInMm;
-
-    if (unit === 'inch') {
-      widthInMm = inchesToMm(widthInNumber);
-      heightInMm = inchesToMm(heightInNumber);
-    } else {
-      widthInMm = cmToMm(widthInNumber);
-      heightInMm = cmToMm(heightInNumber);
-    }
-
+    const widthInMm =
+      unit === 'inch' ? inchesToMm(widthInNumber) : cmToMm(widthInNumber);
+    const heightInMm =
+      unit === 'inch' ? inchesToMm(heightInNumber) : cmToMm(heightInNumber);
     const sheetsInNumber = parseFloat(sheets);
 
     const totalLogos = getMaxRectangles(widthInMm, heightInMm) * sheetsInNumber;
-    setLogos(totalLogos);
-
     const perSheetCost = getCostPerSheet(sheetsInNumber);
+
+    setLogos(totalLogos);
     setCostPerSheet(perSheetCost);
-
     setCostPerLogo(Math.round((perSheetCost / totalLogos) * 100) / 100);
-
-    return () => {};
   }, [height, width, sheets, unit, widthInNumber, heightInNumber]);
 
-  function handleValueChange(val: 'cm' | 'inch') {
-    setUnit(val);
-  }
+  const handleValueChange = (val: 'cm' | 'inch') => setUnit(val);
 
   return (
-    <div className="container mx-auto max-w-screen-lg  h-screen my-2">
+    <div className="container mx-auto max-w-screen-lg h-screen my-2">
       <Card className="pt-4 mx-2 mt-2">
         <CardContent>
           <ToggleGroup
@@ -166,15 +158,12 @@ export default function Home() {
       <Card className="pt-4 mx-2 mt-2">
         <CardContent>
           <div>
-            {!isNaN(logos) ? (
-              <p className="text-2xl text-center">
-                <span className="font-bold">{Math.floor(logos)}</span> Logos
-              </p>
-            ) : (
-              <p className="text-2xl text-center">
-                <span className="font-bold">0</span> Logos
-              </p>
-            )}
+            <p className="text-2xl text-center">
+              <span className="font-bold">
+                {!isNaN(logos) ? Math.floor(logos) : 0}
+              </span>{' '}
+              Logos
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -187,19 +176,59 @@ export default function Home() {
 
       <Card className="pt-4 mx-2 mt-2">
         <CardContent>
-          {!isNaN(costPerLogo) ? (
-            <p className="mt-1">* ₹{costPerLogo} / logo</p>
-          ) : (
-            <p className="mt-1">* ₹0 / logo</p>
-          )}
+          <p className="mt-1">
+            * ₹{!isNaN(costPerLogo) ? costPerLogo : 0} / logo
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card className="pt-4 mx-2 mt-2">
+        <CardContent>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger className="hover:no-underline">
+                Price per Sheet
+              </AccordionTrigger>
+              <AccordionContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Sheets</TableHead>
+                      <TableHead>Price per Sheet</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>1</TableCell>
+                      <TableCell>₹1800</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>2 - 4</TableCell>
+                      <TableCell>₹1400</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>5 - 9</TableCell>
+                      <TableCell>₹1300</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>10 - 14</TableCell>
+                      <TableCell>₹1200</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>15 - 19</TableCell>
+                      <TableCell>₹1100</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>20+</TableCell>
+                      <TableCell>₹1000</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </CardContent>
       </Card>
     </div>
   );
 }
-
-// 1 Sheet (216 Square inch)  = Rs.2000
-// 2 Sheet (432 Square inch)  = Rs.3000 (Rs.7/Square inch)
-// 3 Sheet (648 Square inch)  = Rs.4500 (Rs.7/Square inch)
-// 4 Sheet (864 Square inch)  = Rs.6000 (Rs.7/Square inch)
-// 5 Sheet (1080 Square inch) = Rs.7000 (Rs.6.5/Square inch)
