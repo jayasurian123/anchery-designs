@@ -84,7 +84,6 @@ export default function Home() {
 
     const totalLogos = getMaxRectangles(widthInMm, heightInMm) * sheetsInNumber;
     const perSheetCost = getCostPerSheet(sheetsInNumber);
-    console.log(isNaN(perSheetCost));
     setLogos(totalLogos);
     setCostPerSheet(perSheetCost);
     setCostPerLogo(Math.round((perSheetCost / totalLogos) * 100) / 100);
